@@ -38,9 +38,10 @@ streamlit run main.py
 ├── options.py       # Descarga y renderizado de cadena de opciones
 ├── valuation.py     # Lógica del analizador: parseo CSV, gráfico, veredicto
 ├── requirements.txt
-└── examples/
+└── assets/
     ├── amat_valuacion.csv
     └── lly_valuacion.csv
+    └── vrtx_valuacion.csv
 ```
 
 ## Formato CSV para importar
