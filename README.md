@@ -1,19 +1,26 @@
 # Panel de Control Financiero
-
 Dashboard financiero construido con Streamlit para seguimiento de CEDEARs y acciones que cotizan en bolsa.
 
 ## Secciones
 
 ### 📊 Análisis Base
+<img width="640" height="360" alt="image" src="https://github.com/user-attachments/assets/fc0f8168-b679-41b4-ab26-951d1e9e330d" /> 
+
 Tarjetas en tiempo real con precio ADR (USD), precio local (ARS) y RSI para cada ticker. Permite agregar y quitar tickers dinámicamente.
 
 ### 📂 Portfolios
+<img width="640" height="360" alt="image" src="https://github.com/user-attachments/assets/65bf741d-7f48-40a6-bfb5-7743901a9edc" /> 
+
 Dos portfolios precargados con pesos objetivo (%). Ingresás la cantidad de un ticker ancla y el sistema calcula automáticamente cuántas unidades necesitás de cada instrumento para respetar los pesos, mostrando el margen de error por redondeo.
 
 ### 📋 Opciones
+<img width="640" height="360" alt="image" src="https://github.com/user-attachments/assets/1a5b8e17-aeeb-4427-b5d3-9f616898b9c8" /> 
+
 Cadena de opciones (calls y puts) para los próximos 30 días, en formato unificado `Call | Strike | Put` con highlight del precio actual y filtro de rango de strikes. Carga bajo demanda para no afectar la performance general.
 
 ### 🔬 Analizador
+<img width="640" height="360" alt="image" src="https://github.com/user-attachments/assets/ce9018cd-06aa-4638-baea-6711352f4243" /> 
+
 Herramienta de valuación por quarters. Permite ingresar manualmente o importar vía CSV hasta 5 quarters de datos financieros (precio, shares, OCF, buyback yield) y genera:
 - Gráfico comparativo con triple eje (OCF/Share, Stock Price, Buyback %)
 - Veredicto automático con métricas de momentum, tendencia OCF, eficiencia de buyback y narrativa comparativa
