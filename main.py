@@ -188,7 +188,11 @@ with tabs[2]:
 
     fc1, fc2, fc3, fc4 = st.columns([2, 1, 1, 1])
     with fc1:
-        tickers_sel = st.multiselect("Filtrar tickers:", list(tickers_tuple), default=list(tickers_tuple), key="opt_tickers")
+        # Selector de UN ticker — la carga es por ticker individual
+        ticker_sel = st.selectbox(
+            "Ticker:", list(tickers_tuple),
+            key="opt_ticker_sel"
+        )
     with fc2:
         orden = st.selectbox("Ordenar por:", ["Strike", "Volumen Call", "OI Call", "Volumen Put", "OI Put"], key="opt_orden")
     with fc3:
@@ -198,40 +202,41 @@ with tabs[2]:
         if st.button("🔄 Recargar", key="opt_reload"):
             get_options_data.clear()
             st.session_state.opt_loaded = False
+            st.session_state.opt_ticker_cargado = None
 
     rango_pct = None if rango_opt == "Todos" else float(rango_opt.replace("±", "").replace("%", ""))
 
+    # Limpiar automáticamente si el ticker cambió desde la última carga
+    if st.session_state.get("opt_ticker_cargado") != ticker_sel:
+        st.session_state.opt_loaded = False
+
     # ── Carga bajo demanda ────────────────────
     if not st.session_state.get("opt_loaded", False):
-        st.info("📋 Las opciones no se cargan automáticamente para no afectar la performance.")
+        st.info(f"📋 Presioná **Cargar** para ver las opciones de **{ticker_sel}**.")
         if st.button("⬇ Cargar opciones", key="opt_load", type="primary"):
             st.session_state.opt_loaded = True
+            st.session_state.opt_ticker_cargado = ticker_sel
             st.rerun()
     else:
-        with st.spinner("Cargando opciones..."):
-            resultado = get_options_data(tickers_tuple)
+        with st.spinner(f"Cargando opciones de {ticker_sel}..."):
+            resultado = get_options_data((ticker_sel,))
 
         df_long, prices = resultado if isinstance(resultado, tuple) else (resultado, {})
 
         if df_long.empty:
-            st.warning("No se encontraron opciones en los próximos 30 días.")
+            st.warning(f"No se encontraron opciones para {ticker_sel} en los próximos 30 días.")
         else:
-            if tickers_sel:
-                df_long = df_long[df_long["ticker"].isin(tickers_sel)]
+            precio_actual = prices.get(ticker_sel)
+            fechas = sorted(df_long[df_long["ticker"] == ticker_sel]["expira"].unique())
+            precio_md = f" — precio actual: **${precio_actual:.2f}**" if precio_actual else ""
+            st.markdown(f"### {ticker_sel}{precio_md}")
 
-            for ticker in df_long["ticker"].unique():
-                precio_actual = prices.get(ticker)
-                fechas = sorted(df_long[df_long["ticker"] == ticker]["expira"].unique())
-                precio_md = f" — precio actual: **${precio_actual:.2f}**" if precio_actual else ""
-                st.markdown(f"### {ticker}{precio_md}")
-
-                for tab_f, fecha in zip(st.tabs([str(f) for f in fechas]), fechas):
-                    with tab_f:
-                        chain = build_unified_chain(df_long, ticker, fecha, precio_actual, rango_pct)
-                        dias = int(df_long[(df_long["ticker"] == ticker) & (df_long["expira"] == fecha)]["dias"].iloc[0])
-                        st.caption(f"Vence {fecha} — {dias} días")
-                        st.html(build_unified_html(chain, precio_actual, orden))
-                st.divider()
+            for tab_f, fecha in zip(st.tabs([str(f) for f in fechas]), fechas):
+                with tab_f:
+                    chain = build_unified_chain(df_long, ticker_sel, fecha, precio_actual, rango_pct)
+                    dias = int(df_long[(df_long["ticker"] == ticker_sel) & (df_long["expira"] == fecha)]["dias"].iloc[0])
+                    st.caption(f"Vence {fecha} — {dias} días")
+                    st.html(build_unified_html(chain, precio_actual, orden))
 
 
 # ─────────────────────────────────────────────
