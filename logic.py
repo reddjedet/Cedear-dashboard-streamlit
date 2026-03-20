@@ -3,9 +3,9 @@ import pandas as pd
 import streamlit as st
 
 CEDEAR_RATIOS = {
-    "DE": 20.0, "MRK": 10.0, "LLY": 100.0, "NEM": 3.0, "MSTR": 20.0,
-    "COST": 120.0, "PEP": 18.0, "CAT": 40.0, "GOOGL": 58.0, "MA": 66.0,
-    "PM": 10.0, "AMAT": 30.0
+    "DE": 40.0, "MRK": 5.0, "LLY": 56.0, "NEM": 3.0, "MSTR": 20.0,
+    "COST": 48.0, "PEP": 18.0, "CAT": 20.0, "GOOGL": 58.0, "MA": 33.0,
+    "PM": 18.0, "AMAT": 5.0
 }
 
 def calculate_rsi(series, period=14):
